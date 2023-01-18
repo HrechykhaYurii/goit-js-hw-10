@@ -15,10 +15,11 @@ refs.searchInput.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(evt) {
   
-    const countryName = evt.target.value.trim();
-   
+  const countryName = evt.target.value.trim();
+  
+  clearMarkup();
+
     if (!countryName) {
-        clearMarkup();
         return
     }
 
@@ -26,33 +27,41 @@ function onSearch(evt) {
         .then(data => {
             if (data.length > 10) {
                 specificNameInfo();
-                clearMarkup();
                 return;
             }
-           console.log(data);
-            createMarkup(data);
+            // createMarkup(data);
+            let markup = '';
+            let refsMarkup = '';
+
+            if (data.length === 1) {
+                markup = createMarkupItem(data);
+                refsMarkup = refs.countryInfo;
+            } else {
+                markup = createMarkupList(data); 
+                refsMarkup = refs.countryList;
+            }
+
+            drawMarkup(refsMarkup,markup);
         })
         .catch(error => {
             errorInfo();
-            clearMarkup();
         });
 }
 
-function createMarkup(data) {
-    clearMarkup();
-    let markup = '';
-    let refsMarkup = '';
+// function createMarkup(data) {
+//     let markup = '';
+//     let refsMarkup = '';
 
-    if (data.length === 1) {
-        markup = createMarkupItem(data);
-        refsMarkup = refs.countryInfo;
-    } else {
-        markup = createMarkupList(data); 
-        refsMarkup = refs.countryList;
-    }
+//     if (data.length === 1) {
+//         markup = createMarkupItem(data);
+//         refsMarkup = refs.countryInfo;
+//     } else {
+//         markup = createMarkupList(data); 
+//         refsMarkup = refs.countryList;
+//     }
 
-    drawMarkup(refsMarkup,markup);
-}
+//     drawMarkup(refsMarkup,markup);
+// }
 
 function createMarkupItem(element) {
     return element.map(
